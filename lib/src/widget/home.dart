@@ -7,6 +7,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/src/bloc/auth_bloc.dart';
 import 'package:flutter_app_test/src/bloc/home_bloc.dart';
+import 'package:flutter_app_test/src/model/user_model.dart';
 import 'package:flutter_app_test/src/widget/listpage/chat_page.dart';
 
 import 'dialog.dart';
@@ -40,23 +41,30 @@ class _HomeState extends State<HomeMess> {
     return Container(
       color: Colors.white,
       child: StreamBuilder(
-        stream: homeBloc.userStream,
+        stream: nodeRoot.collection('users').where("id", isEqualTo: authBloc.userCurrent).snapshots(),
         builder: (context,snapshot){
           if(!snapshot.hasData){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Scaffold(
+                body: Center(child: CircularProgressIndicator())
+            ) ;
           }
           else{
+            var userModel =  new UserModel(
+                id: snapshot.data.documents[0]['id'],
+                name: snapshot.data.documents[0]['name'],
+                listFriend: snapshot.data.documents[0]['listFriend'].cast<String>(),
+                idChat: snapshot.data.documents[0]['idChat'].cast<String>(),
+                isActive: snapshot.data.documents[0]['isActive'],
+                imageAvatarUrl: snapshot.data.documents[0]['imageAvatarUrl']);
             return DefaultTabController(
               length: 3,
               child: Scaffold(
                 body: Container(
                   child: TabBarView(
                     children: <Widget>[
-                      ChatPage(),
-                      ChatPage(),
-                      ChatPage(),
+                      ChatPage(datasUser: userModel,),
+                      ChatPage(datasUser: userModel,),
+                      ChatPage(datasUser: userModel,),
                     ],
                   ),
                 ),
