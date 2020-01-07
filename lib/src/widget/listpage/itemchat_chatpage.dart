@@ -288,6 +288,7 @@ class _ConversationItemState extends State<ConversationItem> {
     );
   }
   _buildLatestMessage(){
+    print(widget.listDataChat[0]["check"]);
     bool isThatYou= widget.listDataChat[0]["idFrom"]==authBloc.userCurrent;
     return Container(
       constraints: BoxConstraints(maxWidth: 100),

@@ -24,154 +24,243 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     focusNode.addListener(onFocusChange);
-    animationController=AnimationController(duration: Duration(seconds: 8),vsync: this);
-    animation=Tween(begin: 10,end: -0.15).animate(
+    animationController=AnimationController(duration: Duration(seconds:1),vsync: this);
+    animation=Tween(begin: 0,end: 0).animate(
       CurvedAnimation(
-        parent: animationController,curve: Curves.ease
+        parent: animationController,curve: Curves.easeInCubic
       )
     );
     super.initState();
   }
   void onFocusChange() {
     if (focusNode.hasFocus) {
+    //  animationController.forward();
 //      setState(() {
 //        _isVisibility=!_isVisibility;
 //      });
 
-
     }
   }
+  var width;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animationController,
-      builder: (context,child){
-        return Stack(
-          children: <Widget>[
-
-          ],
-        )
-
-      },
-
-
-      child: Container(
-        color:Colors.white,
-        child: Column(
-          children: <Widget>[
-            _buildAppBar(widget.datasUser.imageAvatarUrl),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.datasUser.idChat.length + 2,
-                itemBuilder: (context,index){
-                  if(index == 0){
-                    //search
-                    return _buildSearchBar();
-                  }
-                  else if(index == 1){
-                    //story
-                    return _buildStoriesList();
-                  }
-                  else {
-                    return StreamBuilder(
-                      stream: nodeRoot
+     width=MediaQuery.of(context).size.width;
+//    return AnimatedBuilder(
+//      animation: animationController,
+//      builder: (context,child){
+////        return Column(
+////          children: <Widget>[
+////            _buildAppBar(widget.datasUser.imageAvatarUrl),
+////            Container(
+////
+////              child: Column(
+////                  children: <Widget>[
+////                    Expanded(
+////                      child: ListView.builder(
+////                        itemCount: widget.datasUser.idChat.length + 2,
+////                        itemBuilder: (context,index){
+////                          if(index == 0){
+////                            //search
+////                            return _buildSearchBar();
+////                          }
+////                          else if(index == 1){
+////                            //story
+////                            return _buildStoriesList();
+////                          }
+////                          else {
+////                            return StreamBuilder(
+////                              stream: nodeRoot
+////                                  .collection('chats/'+widget.datasUser.idChat[index -2].toString()+'/message')
+////                                  .orderBy("timestamp",descending: true)
+////                                  .snapshots(),
+////                              builder: (context,snapshotChatItem){
+////                                if(!snapshotChatItem.hasData){
+////                                  return  Container();
+////                                }
+////                                else{
+////                                  return ConversationItem(
+////                                      listDataChat:snapshotChatItem.data.documents
+////                                  );
+////                                }
+////                              },
+////                            );
+////                          }
+////
+////                        },
+////                      ),
+////                    )
+////                  ],
+////                ),
+////            ),
+////          ],
+////        );
+////        return Container(
+////          color:Colors.white,
+////          child: Column(
+////            children: <Widget>[
+////              _buildAppBar(widget.datasUser.imageAvatarUrl),
+////              Container(
+////               // transform: Matrix4.translationValues(0.0, 0, 0),
+////                child: Expanded(
+////                  child: ListView.builder(
+////                    itemCount: widget.datasUser.idChat.length + 2,
+////                    itemBuilder: (context,index){
+////                      if(index == 0){
+////                        //search
+////                        return _buildSearchBar();
+////                      }
+////                      else if(index == 1){
+////                        //story
+////                        return _buildStoriesList();
+////                      }
+////                      else {
+////                        return StreamBuilder(
+////                          stream: nodeRoot
+////                              .collection('chats/'+widget.datasUser.idChat[index -2].toString()+'/message')
+////                              .orderBy("timestamp",descending: true)
+////                              .snapshots(),
+////                          builder: (context,snapshotChatItem){
+////                            if(!snapshotChatItem.hasData){
+////                              return  Container();
+////                            }
+////                            else{
+////                              return ConversationItem(
+////                                  listDataChat:snapshotChatItem.data.documents
+////                              );
+////                            }
+////                          },
+////                        );
+////                      }
+////
+////                    },
+////                  ),
+////                ),
+////              )
+////            ],
+////          ),
+////        );
+//
+//      },
+//    );
+  return Container(
+    color:Colors.white,
+    child: Column(
+      children: <Widget>[
+        _buildAppBar(widget.datasUser.imageAvatarUrl),
+        Expanded(
+          child: ListView.builder(
+            itemCount: widget.datasUser.idChat.length + 2,
+            itemBuilder: (context,index){
+              if(index == 0){
+                //search
+                return _buildSearchBar();
+              }
+              else if(index == 1){
+                //story
+                return _buildStoriesList();
+              }
+              else {
+                return StreamBuilder(
+                  stream: nodeRoot
                       .collection('chats/'+widget.datasUser.idChat[index -2].toString()+'/message')
                       .orderBy("timestamp",descending: true)
                       .snapshots(),
-                      builder: (context,snapshotChatItem){
-                        if(!snapshotChatItem.hasData){
-                          return  Container();
-                        }
-                        else{
-                          return ConversationItem(
-                              listDataChat:snapshotChatItem.data.documents
-                          );
-                        }
-                      },
-                    );
-                  }
+                  builder: (context,snapshotChatItem){
+                    if(!snapshotChatItem.hasData){
+                      return  Container();
+                    }
+                    else{
+                      return ConversationItem(
+                          listDataChat:snapshotChatItem.data.documents
+                      );
+                    }
+                  },
+                );
+              }
 
-                },
-              ),
-            )
-          ],
-        ),
-      )
-    );
+            },
+          ),
+        )
+      ],
+    ),
+  );
   }
 
   _buildAppBar(String imgUrl){
-    return Padding(
-      padding:EdgeInsets.only(
-        top:40, left:16,right: 16,
-      ),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: (){},
-                  child: ClipOval(
-                    child: Image.network(
-                      imgUrl,
-                      width: 45,
-                      height: 45,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  'Chat',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize:24,
-                      fontWeight: FontWeight.bold
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Container(
-                    width: 40.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey.shade200,
-                    ),
-                    child: Icon(
-                      FontAwesomeIcons.camera,
-                      size: 18.0,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0.0),
-                  child: Container(
-                    width: 40.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey.shade200,
-                    ),
-                    child: Icon(
-                      FontAwesomeIcons.pen,
-                      size: 18.0,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+    return Container(
+
+      child: Padding(
+        padding:EdgeInsets.only(
+          top:40, left:16,right: 16,
         ),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  InkWell(
+                    onTap: (){},
+                    child: ClipOval(
+                      child: Image.network(
+                        imgUrl,
+                        width: 45,
+                        height: 45,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'Chat',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize:24,
+                        fontWeight: FontWeight.bold
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Container(
+                      width: 40.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey.shade200,
+                      ),
+                      child: Icon(
+                        FontAwesomeIcons.camera,
+                        size: 18.0,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: Container(
+                      width: 40.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey.shade200,
+                      ),
+                      child: Icon(
+                        FontAwesomeIcons.pen,
+                        size: 18.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+      )
     ) ;
   }
   _buildSearchBar(){
